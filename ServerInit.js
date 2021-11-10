@@ -1,4 +1,5 @@
-import BOT_VARS from "./BOT_VARS.js";
+import dotenv from 'dotenv';
+dotenv.config();
 import Strings from "./strings.json";
 
 export default class ServerInit {
@@ -8,8 +9,8 @@ export default class ServerInit {
 
     static async init(client) {
         this.client = client;
-        this.guild = await this.client.guilds.fetch(BOT_VARS.swm_id);
-        console.log("Initialized Server Init.");
+        this.guild = await this.client.guilds.fetch(process.env.SWM_ID);
+        
         
 
 
@@ -18,6 +19,8 @@ export default class ServerInit {
         this.client.on('guildMemberAdd', m => {
             m.roles.add(this.guild.roles.cache.find( r => r.name === "New"));
         });
+
+        console.log("Initialized Server Init.");
     }
 
     static async checkInitChannel() {
@@ -44,7 +47,7 @@ export default class ServerInit {
     static async createInitChannel(newRole) {
         console.log("Init channel does not exist, creating...");
         let channel = await this.guild.channels.create("init", {
-            parent: "907310507776671762",
+            parent: process.env.SWM_CAT_ID,
             permissionOverwrites: [
                 {
                     id: newRole.id,
@@ -61,9 +64,7 @@ export default class ServerInit {
             let gUser = this.guild.members.cache.find(u => u.id === user.id);
             if(react.emoji.name === '✅') {
                 gUser.roles.set([this.guild.roles.cache.find(r => r.name === "Guest").id]);
-                console.log("ROLE SET");
             } else if(react.emoji.name === '❎') {
-                console.log("Kick");
                 gUser.kick("Member disagreed to rules.")
             }
         });

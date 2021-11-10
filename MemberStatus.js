@@ -1,6 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import SWM_ML from "./swm_members.json";
-import fs from "fs";
-import BOT_VARS from "./BOT_VARS.js";
 
 export default class MemberStatus {
 
@@ -12,7 +12,7 @@ export default class MemberStatus {
         this.listMembers();
     }
     static async listMembers() {
-        let SWM = await this.client.guilds.fetch(BOT_VARS.swm_id);
+        let SWM = await this.client.guilds.fetch(process.env.SWM_ID);
         SWM.members.fetch( { user: SWM_ML.map((m) => { return [m.id] }) } ).then((members) => {
             //console.log("Members: ", members);
         });

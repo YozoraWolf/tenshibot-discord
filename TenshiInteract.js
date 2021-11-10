@@ -1,11 +1,10 @@
-import BOT_VARS from "./BOT_VARS.js";
+import dotenv from 'dotenv';
+dotenv.config();
 import kick_lines from "./kick_lines.json";
 import TZones from "./timezones.json";
 import moment from 'moment-timezone';
 import Utils from "./Utils.js";
 import Jimp from "jimp";
-import * as canvas from 'canvas';
-import { Permissions } from "discord.js";
 
 export default class TenshiInteract {
 
@@ -18,12 +17,12 @@ export default class TenshiInteract {
 
     static async init(client) {
         this.client = client;
-        this.guild = await this.client.guilds.fetch(BOT_VARS.swm_id);
+        this.guild = await this.client.guilds.fetch(process.env.SWM_ID);
         this.client.on('message', (msg) => {
             if(msg.author.username === "Tenshi") return;
             //if(msg.content.match()) this.checkGreet(msg);
 
-            if (msg.content.toLowerCase().split(" ")[0] == "!t") {
+            if (msg.content.toLowerCase().split(" ")[0] == "$t") {
                 let cmd = msg.content.toLowerCase().split(" ")[1];
                 switch(cmd) {
                     case "mta":
@@ -45,6 +44,7 @@ export default class TenshiInteract {
                     case "kick":
                         this.kickMember(msg, msg.content.toLowerCase().split(" ")[2]);
                         break;
+                    //ADMIN ONLY
                     case "snick":
                         this.checkSetNick(msg, msg.content.toLowerCase().split(" ")[2], msg.content.toLowerCase().split(" ")[3]);
                         break;
@@ -54,11 +54,35 @@ export default class TenshiInteract {
                     case "flip":
                         this.checkCoinFlip(msg);
                         break;
+                    case "help":
+                        this.checkHelp(msg);
+                        break;
+                    default:
+                        break;
                 }
             }
         });
 
         console.log("Initialized Tenshi Interact.");
+    }
+
+    static checkHelp(msg) {
+        Utils.sendEmbed(msg, {
+            title: "TenshiBot's Commands",
+            description: `**Public Commands**
+            $t mta - Coming soon...
+            $t time <timezone> - Tells time on specified timezone
+            $t kebab - Does a thing
+            $t sanae <message> - Make Sanae say a prompt you provide
+            $t tenshisign <message>- Make Tenshi hold a sign with your message
+            $t db <tags> - Danbooru Random Image Search (max 2 allowed)
+            $t flip - Flip a coin
+            
+            $*Admin Only Commands**
+            $t kick <nick>
+            $t snick <nick> <newnick>`,
+            image: {url: "https://cdn.donmai.us/sample/07/cd/__hinanawi_tenshi_touhou_drawn_by_e_o__sample-07cdab4871a7261b175a73be0d45d1e5.jpg"}
+        });
     }
 
     static checkServerAddress(msg) {
@@ -181,7 +205,6 @@ export default class TenshiInteract {
 
     static async checkCoinFlip(msg) {
         let th = Utils.getRandom(0,1);
-        console.log("TH: ", th);
         let m = await Utils.sendMessage(msg, `Flipped the coin and the result is...`);
         setTimeout(() => {m.edit(m.content+` **${th === 0 ? "Heads!" : "Tails!"}**`)}, 2000);
     }

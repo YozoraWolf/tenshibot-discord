@@ -1,4 +1,5 @@
-import BOT_VARS from "./BOT_VARS";
+import dotenv from 'dotenv';
+dotenv.config();
 
 export default class FunFuncs {
 
@@ -7,7 +8,7 @@ export default class FunFuncs {
 
     static async init(client) {
         this.client = client;
-        this.guild = await this.client.guilds.fetch(BOT_VARS.swm_id);
+        this.guild = await this.client.guilds.fetch(process.env.SWM_ID);
         console.log("Initialized Fun Functions.");
     }
 }
