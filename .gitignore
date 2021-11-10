@@ -3,3 +3,4 @@ tenshi.js
 *.bat
 *.ts
 tsconfig.json
+.env

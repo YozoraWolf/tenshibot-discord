@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { Client, MessageAttachment } from "discord.js";
 import Tenshi from "./tenshi.js";
 import MemberStatus from "./MemberStatus.js";
@@ -17,11 +19,11 @@ client.on("ready", () => {
 client.on('disconnect', function () {
     // Relog again here
     console.log("Connection closed! Reconnecting...");
-    client.login('MjcxMTY4NjUyNjU5Nzg1NzI4.DsJybA.hKgY8lCF0L3tj2gE3ItUKPUhtkA');
+    client.login(process.env.BOT_TOKEN);
 });
 
 client.on('error', (err) => {
     //setTimeout(this.reconnect, reconnection_time);
 });
 
-client.login('MjcxMTY4NjUyNjU5Nzg1NzI4.DsJybA.hKgY8lCF0L3tj2gE3ItUKPUhtkA');
+client.login(process.env.BOT_TOKEN);
