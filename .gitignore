@@ -1,0 +1,5 @@
+tenshi.js
+/node_modules
+*.bat
+*.ts
+tsconfig.json
