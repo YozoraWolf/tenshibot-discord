@@ -13,7 +13,7 @@ export default class TenshiInteract {
     guild = undefined;
 
     // Misc Vars
-    kebab = ["https://www.youtube.com/watch?v=ocW3fBqPQkU"];
+    static kebab = ["https://www.youtube.com/watch?v=ocW3fBqPQkU"];
 
     static async init(client) {
         this.client = client;
@@ -99,7 +99,7 @@ export default class TenshiInteract {
     }
 
     static checkKebab(msg) {
-        msg.reply(msg, "REMOVE KEBAB! \n " + this.kebab[Utils.getRandom(0,this.kebab.length)]);
+        Utils.sendMessage(msg, "REMOVE KEBAB! \n " + this.kebab[Utils.getRandom(0,this.kebab.length)]);
     }
 
     static checkSanaeDialog(msg, speech) {
