@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import Strings from "./strings.json";
+import Strings from "./strings.json" assert { type: "json" };
 
 export default class ServerInit {
 

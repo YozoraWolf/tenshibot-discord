@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import SWM_ML from "./swm_members.json";
+import SWM_ML from "./swm_members.json" assert { type: "json" };
 
 export default class MemberStatus {
 

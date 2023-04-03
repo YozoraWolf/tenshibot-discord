@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import Utils from "./Utils.js";
-import TENSHI_STATUS from "./tenshi_status.json";
+import TENSHI_STATUS from "./tenshi_status.json" assert { type: "json" };
 
 export default class TenshiActivity {
 

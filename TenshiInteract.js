@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import kick_lines from "./kick_lines.json";
-import TZones from "./timezones.json";
+import kick_lines from "./kick_lines.json" assert { type: "json" };
+import TZones from "./timezones.json" assert { type: "json" };
 import moment from 'moment-timezone';
 import Utils from "./Utils.js";
 import Jimp from "jimp";
