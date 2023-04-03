@@ -64,7 +64,11 @@ export default class MemberStatus {
             if(react.message.id !== nsfwDiscMess.id) return;
             let gUser = this.guild.members.cache.find(u => u.id === user.id);
             if(react.emoji.name === '🔞') {
-                gUser.roles.add(this.guild.roles.cache.find(r => r.name === "NSFW").id);
+                try {
+                    gUser.roles.add(this.guild.roles.cache.find(r => r.name === "NSFW").id);
+                } catch(e) {
+                    console.error("Could not change role!\nE: ",e)
+                }
             }
         });
 
@@ -72,7 +76,11 @@ export default class MemberStatus {
             if(react.message.id !== nsfwDiscMess.id) return;
             let gUser = this.guild.members.cache.find(u => u.id === user.id);
             if(react.emoji.name === '🔞') {
-                gUser.roles.remove(this.guild.roles.cache.find(r => r.name === "NSFW").id);
+                try {
+                    gUser.roles.remove(this.guild.roles.cache.find(r => r.name === "NSFW").id);
+                } catch(e) {
+                    console.error("Could not change role!\nE: ",e)
+                }
             }
         });
     }
