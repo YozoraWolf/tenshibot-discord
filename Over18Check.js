@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import Strings from "./strings.json" assert { type: "json" };
+require('dotenv').config();
+const Strings = require('./strings.json');
 
-export default class MemberStatus {
+class Over18Check {
 
     client = undefined;
 
@@ -85,3 +84,5 @@ export default class MemberStatus {
         });
     }
 }
+
+module.exports = Over18Check;

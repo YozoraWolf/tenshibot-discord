@@ -1,9 +1,9 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
-import Utils from "./Utils.js";
-import TENSHI_STATUS from "./tenshi_status.json" assert { type: "json" };
+const Utils = require("./Utils.js");
+const TENSHI_STATUS = require("./tenshi_status.json");
 
-export default class TenshiActivity {
+class TenshiActivity {
 
     client = undefined;
     guild = undefined;
@@ -26,3 +26,5 @@ export default class TenshiActivity {
         this.client.user.setActivity(TENSHI_STATUS[r].msg, {type: TENSHI_STATUS[r].type});
     }
 }
+
+module.exports = TenshiActivity;

@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "tenshi.js",
+  "type": "commonjs",
   "dependencies": {
+    "@discordjs/rest": "^1.7.0",
     "blessed": "^0.1.81",
     "canvas": "^2.8.0",
-    "discord.js": "^12.5.3",
+    "discord.js": "^14.9.0",
     "discordie": "^0.11.0",
     "dotenv": "^10.0.0",
     "jimp": "^0.16.1",
@@ -22,9 +24,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --experimental-json-modules main.js"
+    "start": "node --experimental-json-modules main.js",
+    "deploy": "node --experimental-modules deploy-commands.cjs"
   },
   "author": "YozoraWolf",
-  "license": "ISC",
-  "type": "module"
+  "license": "ISC"
 }

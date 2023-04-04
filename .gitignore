@@ -4,3 +4,4 @@ tenshi.js
 *.ts
 tsconfig.json
 .env
+config.json

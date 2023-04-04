@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
-import Strings from "./strings.json" assert { type: "json" };
+const Strings = require("./strings.json");
 
-export default class ServerInit {
+class ServerInit {
 
     client = undefined;
     guild = undefined;
@@ -11,9 +11,6 @@ export default class ServerInit {
         this.client = client;
         this.guild = await this.client.guilds.fetch(process.env.SWM_ID);
         
-        
-
-
         await this.checkInitChannel();
 
         this.client.on('guildMemberAdd', m => {
@@ -24,9 +21,8 @@ export default class ServerInit {
     }
 
     static async checkInitChannel() {
-        
         let init = await this.guild.channels.cache.find( c => c.name === "init");
-        //console.log("Init: ", init);
+        
         if(init === undefined) {
             let newRole = await this.guild.roles.create({
                 data: {
@@ -34,10 +30,8 @@ export default class ServerInit {
                     color: "#FFFFFF",
                     reason: "New"
                 }
-                
             });
 
-            //console.log("NEW ROLE: ", newRole);
             this.createInitChannel(newRole);
         } else {
             this.updateRulesMessage();
@@ -85,5 +79,6 @@ export default class ServerInit {
             }
         });
     }
-
 }
+
+module.exports = ServerInit;
