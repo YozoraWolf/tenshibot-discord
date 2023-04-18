@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction, EmbedBuilder } = require('discord.js');
-const Utils = require('../utils');
+const Utils = require('../Utils.js');
 const { get } = require('request');
 const axios = require('axios');
 
