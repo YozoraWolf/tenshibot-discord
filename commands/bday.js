@@ -49,6 +49,7 @@ module.exports = {
         data[userId].name = name;
         data[userId].day = day;
         data[userId].month = month;
+        data[userId].years = {};
 
         // Write the updated data back to the JSON file
         fs.writeFileSync("birthdays.json", JSON.stringify(data, null, 2));
@@ -71,7 +72,8 @@ module.exports = {
         const today = new Date();
         const todayMonth = today.getMonth() + 1;
         const todayDay = today.getDate();
-
+        const todayYear = today.getFullYear();
+        const year = todayYear.toString();  
 
 
         // Loop through the data and check for birthdays to celebrate
@@ -80,7 +82,7 @@ module.exports = {
             const month = data[id].month;
 
             // Check if the birthday has not been celebrated this year
-            if (month === todayMonth && day === todayDay && !data[id].celebrated) {
+            if (month === todayMonth && day === todayDay && !data[id].years.hasOwnProperty(year)) {
                 
                   const tenorApikey = process.env.TENOR_API_KEY;
                   const tags = 'anime+birthday';
@@ -98,6 +100,7 @@ module.exports = {
                     const embed = new EmbedBuilder()
                       .setColor('#FFC0CB')
                       .setTitle(`🎉 Happy birthday ${data[id].name}! 🎉`)
+                      .setDescription('Say Happy Birthday, everyone! 🎉')
                       .setImage(gif);
                       
                     message = await channel.send({ embeds: [embed] });
@@ -111,8 +114,10 @@ module.exports = {
                 
 
                 // Update the data to show that the birthday has been celebrated
-                data[id].celebrated = true;
-                data[id].messageId = message.id;
+                if(data[id].years === undefined) data[id].years = {};
+                data[id].years[year] = {};
+                data[id].years[year].celebrated = true;
+                data[id].years[year].messageId = message.id;
                 fs.writeFileSync('birthdays.json', JSON.stringify(data, null, 2));
             }
         }
@@ -128,5 +133,6 @@ module.exports = {
 
         // Load the existing data from the JSON file
         return JSON.parse(fs.readFileSync(birthdaysFile));
-    }
+    },
+    
 };
