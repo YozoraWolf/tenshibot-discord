@@ -10,7 +10,13 @@ const ServerInit = require("./ServerInit.js");
 const Over18Check = require("./Over18Check.js");
 const TenshiActivity = require("./TenshiActivity.js");
 
-let client = new Client({ intents: [ GatewayIntentBits.Guilds ]});
+const client = new Client({
+	intents: [
+	  GatewayIntentBits.Guilds,
+	  GatewayIntentBits.GuildMessages,
+	  GatewayIntentBits.GuildMessageReactions
+	]
+  });
 
 client.commands = new Collection();
 
@@ -31,13 +37,15 @@ for (const file of commandFiles) {
 }
 
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log(`Connected as ${client.user.username}`);
     //MemberStatus.init(client);
     ServerInit.init(client);
     //TenshiInteract.init(client);
     TenshiActivity.init(client);
     Over18Check.init(client);
+	// Check for birthdays to celebrate on startup
+	await require("./commands/bday.js").checkBirthdays(client);
 });
 
 client.on('disconnect', function () {

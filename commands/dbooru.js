@@ -4,8 +4,8 @@ const Utils = require('../Utils.js');
 const { get } = require('request');
 const axios = require('axios');
 
-const DBOORU = "https://testbooru.donmai.us";
-//const DBOORU = "https://danbooru.donmai.us";
+//const DBOORU = "https://testbooru.donmai.us";
+const DBOORU = "https://danbooru.donmai.us";
 const headers = {
     "Referer": DBOORU,
     "Content-Type": "application/json"
@@ -79,24 +79,27 @@ module.exports = {
 
         do {
             rPosts = await getPost(`${tags[0]}+${tags[1]}`, pageMax);
-            
-            if(!['', '*'].includes(tags[2].charAt(0)))
+            //console.log("Len: ", rPosts.length);
+            if(!['', '*'].includes(tags[2].charAt(0))) {
                 rPosts = rPosts.filter(p => p.rating.charAt(0) === tags[2].charAt(0));
-            
-            console.log("Len: ", rPosts.length);
-            rPost = rPosts[Utils.getRandom(0,rPosts.length-1)];
+                retries++;
+                console.log("Len: ", rPosts.length);
+                console.log("Retry: ", retries);
+            } else {
+                break;
+            }
+        }
+        while(rPosts.length === 0);
 
-            retries++;
-            if(rPost === undefined) break;
-            if(retries >= max_retries) break;
-            if(['', '*'].includes(tags[2].charAt(0))) break;
-        } while(rPosts.length === 0);
+        //console.log("Len: ", rPosts.length);
+        rPost = rPosts[Utils.getRandom(0,rPosts.length-1)];
 
         if(retries === max_retries) {
             await interaction.editReply({
                 content: "Sorry, I couldn't find anything with that rating, try something else.",
                 ephemeral: true
             });
+            return;
         }
 
         if(rPost === undefined) {
@@ -104,15 +107,18 @@ module.exports = {
                 content: "Sorry, I couldn't find anything with that, try something else.",
                 ephemeral: true
             });
+            return;
         }
 
         const {data: rPostTitle} = await axios.get(`${DBOORU}/posts/${rPost.id}/artist_commentary.json`, { headers });
+
+        console.log(`Posted Embed for dbooru #${rPost.id}`);
 
         const embed = new EmbedBuilder()
             .setColor('#007FFF')
             .setTitle(rPostTitle.original_title || `Post #${rPost.id}`)
             .setDescription(`${rPostTitle.original_description}\nSource: ${rPost.source}` || '')
-            .setImage(rPost.preview_file_url)
+            .setImage(rPost.media_asset.variants[2].url)
             .setFooter({text: `Danbooru`});
 
         await interaction.editReply({
