@@ -91,7 +91,7 @@ module.exports = {
                   const url = `https://tenor.googleapis.com/v2/search?q=${tags}&key=${tenorApikey}&limit=${limit}&pos=${randomPage}`;
                   
                   let message = undefined;
-                  const channel = client.channels.cache.get('711332275068993546');
+                  const channel = client.channels.cache.get(process.env.SWM_LOBBY_ID);
                   try {
                     const response = await axios.get(url);
                     const gifs = response.data.results;
