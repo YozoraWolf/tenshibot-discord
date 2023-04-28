@@ -59,7 +59,7 @@ module.exports = {
             .setTitle(`Thanks for setting your birthday, ${name}!`)
             .setColor('#25a302');
 
-        interaction.reply({ embeds: [embed] });
+        interaction.reply({ embeds: [embed], ephemeral: true });
         this.checkBirthdays(interaction.client);
         return;
     },
