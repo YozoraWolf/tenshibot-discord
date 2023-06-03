@@ -1,4 +1,4 @@
-const { DiscordAPIError, MessageAttachment, MessageEmbed } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 const https = require('https');
 
 module.exports = class Utils {
@@ -80,5 +80,29 @@ module.exports = class Utils {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1) + min);
-    }    
+    }
+
+    static convertSecondsToTime(seconds) {
+        if (seconds < 60) {
+          return `${seconds} seconds`;
+        } else if (seconds < 3600) {
+          const minutes = Math.floor(seconds / 60);
+          const remainingSeconds = seconds % 60;
+          return `${minutes} minutes, ${remainingSeconds} seconds`;
+        } else if (seconds < 86400) {
+          const hours = Math.floor(seconds / 3600);
+          const remainingSeconds = seconds % 3600;
+          const minutes = Math.floor(remainingSeconds / 60);
+          const remainingSeconds2 = remainingSeconds % 60;
+          return `${hours} hours, ${minutes} minutes, ${remainingSeconds2} seconds`;
+        } else {
+          const days = Math.floor(seconds / 86400);
+          const remainingSeconds = seconds % 86400;
+          const hours = Math.floor(remainingSeconds / 3600);
+          const remainingSeconds2 = remainingSeconds % 3600;
+          const minutes = Math.floor(remainingSeconds2 / 60);
+          const remainingSeconds3 = remainingSeconds2 % 60;
+          return `${days} days, ${hours} hours, ${minutes} minutes, ${remainingSeconds3} seconds`;
+        }
+      }
 }

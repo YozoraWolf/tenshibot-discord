@@ -10,7 +10,13 @@ const ServerInit = require("./ServerInit.js");
 const Over18Check = require("./Over18Check.js");
 const TenshiActivity = require("./TenshiActivity.js");
 
-let client = new Client({ intents: [ GatewayIntentBits.Guilds ]});
+const client = new Client({
+	intents: [
+	  GatewayIntentBits.Guilds,
+	  GatewayIntentBits.GuildMessages,
+	  GatewayIntentBits.GuildMessageReactions
+	]
+  });
 
 client.commands = new Collection();
 

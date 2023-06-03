@@ -13,8 +13,18 @@ class ServerInit {
         
         await this.checkInitChannel();
 
-        this.client.on('guildMemberAdd', m => {
-            m.roles.add(this.guild.roles.cache.find( r => r.name === "New"));
+        this.client.on('guildMemberAdd', async (member) => {
+            const { guild } = member;
+            const role = guild.roles.cache.find((role) => role.name === "New");
+
+            if (role) {
+                try {
+                    await member.roles.add(role);
+                    console.log(`Assigned ${role.name} role to ${member.user.tag}`);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         });
 
         console.log("Initialized Server Init.");
