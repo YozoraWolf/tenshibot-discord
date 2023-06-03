@@ -31,10 +31,16 @@ module.exports = {
     .addIntegerOption(option =>
       option.setName('time')
         .setDescription('The time limit for the poll in seconds')
+    )
+    .addBooleanOption(option =>
+      option.setName('multi')
+        .setDescription('Will the poll be multiple selection?')
     ),
   async execute(interaction) {
     // Retrieve options from the interaction
     const question = interaction.options.getString('question');
+    const multi = interaction.options.getBoolean('multi') || false;
+
     const options = [];
     for (let i = 1; i <= Poll.MAX_OPTIONS; i++) {
       const option = interaction.options.getString(`option${i}`);
@@ -42,7 +48,7 @@ module.exports = {
     }
     const timeLimit = interaction.options.getInteger('time') || 30;
 
-    const p = new Poll(interaction, question, options, timeLimit); 
+    const p = new Poll(interaction, multi, question, options, timeLimit); 
     await p.start();
     
   },

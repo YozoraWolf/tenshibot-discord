@@ -9,6 +9,7 @@ const { Client, Events, GatewayIntentBits, Collection } = require("discord.js");
 const ServerInit = require("./ServerInit.js");
 const Over18Check = require("./Over18Check.js");
 const TenshiActivity = require("./TenshiActivity.js");
+const Utils = require("./Utils.js");
 
 const client = new Client({
 	intents: [
@@ -36,14 +37,22 @@ for (const file of commandFiles) {
 	}
 }
 
+async function bdayCheckInterval(client) {
+	await require("./commands/bday.js").checkBirthdays(client);
+	setInterval(async () => {
+		await require("./commands/bday.js").checkBirthdays(client);
+	}, 6 * 60 * 60 * 1000);
+}
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log(`Connected as ${client.user.username}`);
     //MemberStatus.init(client);
     ServerInit.init(client);
     //TenshiInteract.init(client);
     TenshiActivity.init(client);
     Over18Check.init(client);
+	// Check for birthdays to celebrate on startup
+	await bdayCheckInterval(client)
 });
 
 client.on('disconnect', function () {
@@ -77,3 +86,4 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.BOT_TOKEN);
+

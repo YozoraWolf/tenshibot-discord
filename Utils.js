@@ -105,4 +105,29 @@ module.exports = class Utils {
           return `${days} days, ${hours} hours, ${minutes} minutes, ${remainingSeconds3} seconds`;
         }
       }
+
+      static isValidDate(day, month, year) {
+        // Check if year is a leap year
+        const isLeapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+        
+        // Determine the maximum number of days for the given month and year
+        const maxDays = [
+          31,
+          isLeapYear ? 29 : 28, // February
+          31,
+          30,
+          31,
+          30,
+          31,
+          31,
+          30,
+          31,
+          30,
+          31
+        ][month - 1];
+      
+        // Check if the day is within the valid range for the given month and year
+        return day >= 1 && day <= maxDays;
+      }
+
 }

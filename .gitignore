@@ -1,5 +1,6 @@
 tenshi.js
 /node_modules
+birthdays.json
 *.bat
 *.ts
 tsconfig.json
