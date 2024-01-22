@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { isValidDate, getRandomIntInclusive } = require('../Utils');
+const { isValidDate, getRandomIntInclusive } = require('../code/Utils');
 const axios = require('axios');
 const dotenv = require("dotenv");
 dotenv.config();
@@ -64,7 +64,7 @@ module.exports = {
         return;
     },
     async checkBirthdays(client) {
-        console.log("Performing Birthday Checks...");
+        console.log("🎈 Performing Birthday Checks...");
 
         const data = this.loadBdays();
 

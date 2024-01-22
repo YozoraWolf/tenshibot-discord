@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const Utils = require('../Utils.js');
+const Utils = require('../code/Utils.js');
 
 class Poll {
 

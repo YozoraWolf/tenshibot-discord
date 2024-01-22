@@ -1,5 +1,5 @@
 require('dotenv').config();
-const Strings = require('./strings.json');
+const Strings = require('../data/strings.json');
 
 class Over18Check {
 
@@ -9,44 +9,57 @@ class Over18Check {
         this.client = client;
         this.guild = await this.client.guilds.fetch(process.env.SWM_ID);
 
+        // Check for the #flairs channel
+        let flairCh = await this.guild.channels.cache.find(ch => ch.name === "flairs");
+        let overMess = undefined;
+        if(flairCh !== undefined) {
+          // Get the second sent message on the channel flairCh
 
-        let nsfw = await this.guild.roles.cache.find( r => r.name === "NSFW");
+
+          overMess = (await flairCh.messages.fetch({after: 0, limit: 5})).first(2)[1];
+          if(overMess === undefined) {
+              console.error("ERROR: Over 18 Message not found! Creating...");
+              // If message doesn't exist create it
+              overMess = await flairCh.send(Strings.nsfw);
+          } else {
+            overMess.edit(Strings.nsfw);
+          }
+        }
+
+
+        let nsfw = await this.guild.roles.cache.find(r => r.name === "NSFW");
         if(nsfw === undefined) {
             this.createNSFWRole(); 
         } else {
             this.updateNSFWDisclaimer();
         }
 
-        console.log("Initialized Over 18 Check.");
-    }
-
-    static async createNSFWRole() {
-        await this.guild.roles.create({
-            data: {
-                name: "NSFW",
-                color: "#780000",
-                reason: "NSFW"
-            }
-        });
-
-        let rulesCh = await this.guild.channels.cache.find(ch => ch.name === "rules");
-        let mess = await rulesCh.send(Strings.nsfw);
-        await mess.react('🔞');
+        await overMess.react('🔞');
         
         this.client.on('messageReactionAdd', (react, user) => {
-            if(react.message.id !== mess.id) return;
+            if(react.message.id !== overMess.id) return;
             let gUser = this.guild.members.cache.find(u => u.id === user.id);
             if(react.emoji.name === '🔞') {
-                gUser.roles.set([this.guild.roles.cache.find(r => r.name === "NSFW").id]);
+                gUser.roles.add([this.guild.roles.cache.find(r => r.name === "NSFW").id]);
             }
         });
 
         this.client.on('messageReactionRemove', (react, user) => {
-            if(react.message.id !== mess.id) return;
+            if(react.message.id !== overMess.id) return;
             let gUser = this.guild.members.cache.find(u => u.id === user.id);
             if(react.emoji.name === '🔞') {
                 gUser.roles.remove([this.guild.roles.cache.find(r => r.name === "NSFW").id]);
             }
+        });
+
+        console.log("✅ Initialized Over 18 Check.");
+    }
+
+    static async createNSFWRole() {
+        await this.guild.roles.create({
+                name: "NSFW",
+                color: "#780000",
+                reason: "NSFW"
         });
     }
 

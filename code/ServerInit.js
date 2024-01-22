@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
-const Strings = require("./strings.json");
+const Strings = require("../data/strings.json");
 
 class ServerInit {
 
@@ -27,7 +27,7 @@ class ServerInit {
             }
         });
 
-        console.log("Initialized Server Init.");
+        console.log("✅ Initialized Server Init.");
     }
 
     static async checkInitChannel() {

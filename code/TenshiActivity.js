@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const Utils = require("./Utils.js");
-const TENSHI_STATUS = require("./tenshi_status.json");
+const TENSHI_STATUS = require("../tenshi_status.json");
 
 class TenshiActivity {
 
@@ -17,7 +17,7 @@ class TenshiActivity {
         this.setRandomActivity();
         setInterval(() => this.setRandomActivity(), TenshiActivity.changeTime);
 
-        console.log("Initialized Tenshi Activity.")
+        console.log("✅ Initialized Tenshi Activity.")
     }
 
     static setRandomActivity() {

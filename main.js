@@ -6,10 +6,11 @@ const path = require('node:path');
 
 const { Client, Events, GatewayIntentBits, Collection } = require("discord.js");
 
-const ServerInit = require("./ServerInit.js");
-const Over18Check = require("./Over18Check.js");
-const TenshiActivity = require("./TenshiActivity.js");
-const Utils = require("./Utils.js");
+const ServerInit = require("./code/ServerInit.js");
+const Over18Check = require("./code/Over18Check.js");
+const TenshiActivity = require("./code/TenshiActivity.js");
+const FlairCheck = require("./code/FlairCheck.js");
+const Utils = require("./code/Utils.js");
 
 const client = new Client({
 	intents: [
@@ -45,14 +46,16 @@ async function bdayCheckInterval(client) {
 }
 
 client.on("ready", async () => {
-    console.log(`Connected as ${client.user.username}`);
+    console.log(`🔌 Connected as ${client.user.username}`);
     //MemberStatus.init(client);
     ServerInit.init(client);
     //TenshiInteract.init(client);
     TenshiActivity.init(client);
-    Over18Check.init(client);
 	// Check for birthdays to celebrate on startup
 	await bdayCheckInterval(client)
+	// Flair Check
+	FlairCheck.init(client);
+	Over18Check.init(client);
 });
 
 client.on('disconnect', function () {

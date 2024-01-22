@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const Utils = require("../Utils.js");
+const Utils = require("../code/Utils.js");
 
 const coin = ["/", "_", "\\"];
 
