@@ -18,5 +18,10 @@
         "name": "News/Events",
         "color": "#FFFFFF",
         "ico": "📰"
+    },
+    {
+        "name": "Touhou",
+        "color": "#Cf0000",
+        "ico": "mari"
     }
 ]
