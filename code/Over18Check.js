@@ -14,15 +14,13 @@ class Over18Check {
         let overMess = undefined;
         if(flairCh !== undefined) {
           // Get the second sent message on the channel flairCh
-
-
           overMess = (await flairCh.messages.fetch({after: 0, limit: 5})).first(2)[1];
           if(overMess === undefined) {
               console.error("ERROR: Over 18 Message not found! Creating...");
               // If message doesn't exist create it
               overMess = await flairCh.send(Strings.nsfw);
           } else {
-            overMess.edit(Strings.nsfw);
+            await overMess.edit(Strings.nsfw);
           }
         }
 
@@ -31,7 +29,7 @@ class Over18Check {
         if(nsfw === undefined) {
             this.createNSFWRole(); 
         } else {
-            this.updateNSFWDisclaimer();
+            this.updateNSFWDisclaimer(overMess);
         }
 
         await overMess.react('🔞');
@@ -63,17 +61,15 @@ class Over18Check {
         });
     }
 
-    static async updateNSFWDisclaimer() {
-        let nsfwDiscMess = (await this.guild.channels.cache.find(ch => ch.name === "rules").messages.fetch({limit: 5})).first(2)[0];
-        //console.log(nsfwDiscMess);
-        if(nsfwDiscMess === undefined) {
+    static async updateNSFWDisclaimer(overMess) {
+        if(overMess === undefined) {
             console.error("ERROR: NSFW Message not found!");
             return;
         }
-        nsfwDiscMess.edit(Strings.nsfw);
+        overMess.edit(Strings.nsfw);
 
         this.client.on('messageReactionAdd', async (react, user) => {
-            if (react.message.id !== nsfwDiscMess.id) return;
+            if (react.message.id !== overMess.id) return;
             let gUser = await this.guild.members.fetch(user.id);
             if (react.emoji.name === '🔞') {
               try {
@@ -86,7 +82,7 @@ class Over18Check {
           });
           
           this.client.on('messageReactionRemove', async (react, user) => {
-            if (react.message.id !== nsfwDiscMess.id) return;
+            if (react.message.id !== overMess.id) return;
             let gUser = await this.guild.members.fetch(user.id);
             if (react.emoji.name === '🔞') {
               try {

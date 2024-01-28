@@ -8,5 +8,15 @@
         "name": "Palworld",
         "color": "#F5E819",
         "ico": "pal"
+    },
+    {
+        "name": "Honkai: Star Rail",
+        "color": "#347DEB",
+        "ico": "hon"
+    },    
+    {
+        "name": "News/Events",
+        "color": "#FFFFFF",
+        "ico": "📰"
     }
 ]

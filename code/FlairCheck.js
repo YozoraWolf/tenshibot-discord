@@ -31,10 +31,17 @@ class FlairCheck {
                 console.error("ERROR: Flair Message not found!");
                 // If message doesn't exist create it
                 flairMess = await flairCh.send("React to this message to get your flair! You will be able to change it at any time and it will allow you to get pinged for news and events for the topics you like!");
+            } else {
+                await flairMess.edit("React to this message to get your flair! You will be able to change it at any time and it will allow you to get pinged for news and events for the topics you like!");
             }
 
             for (const flair of Flairs) {
-                await flairMess.react(await this.guild.emojis.cache.find(emoji => emoji.name === flair.ico));
+                let ico = await this.guild.emojis.cache.find(emoji => emoji.name === flair.ico);
+                try {
+                    await flairMess.react(ico != undefined ? ico : `${flair.ico}`);
+                } catch (error) {
+                    console.error(error);
+                }
             }
 
             this.client.on('messageReactionAdd', (react, user) => {
