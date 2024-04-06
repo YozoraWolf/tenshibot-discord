@@ -10,7 +10,6 @@ const ServerInit = require("./code/ServerInit.js");
 const Over18Check = require("./code/Over18Check.js");
 const TenshiActivity = require("./code/TenshiActivity.js");
 const FlairCheck = require("./code/FlairCheck.js");
-const Utils = require("./code/Utils.js");
 
 const client = new Client({
 	intents: [
@@ -65,7 +64,7 @@ client.on('disconnect', function () {
 });
 
 client.on('error', (err) => {
-    //setTimeout(this.reconnect, reconnection_time);
+	console.error(err);
 });
 
 client.on(Events.InteractionCreate, async interaction => {

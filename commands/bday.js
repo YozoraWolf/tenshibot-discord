@@ -27,7 +27,7 @@ module.exports = {
                 .setTitle(`Sorry, ${interaction.user.username}, you have already set your birthday.`)
                 .setColor('#ff0000');
 
-            interaction.reply({ embeds: [embed] });
+            interaction.reply({ embeds: [embed], ephemeral: true });
             return;
         }
 
@@ -38,7 +38,7 @@ module.exports = {
                 .setDescription('Please enter a valid date between 1 and 31 for the day, and between 1 and 12 for the month.')
                 .setColor('#ff0000');
 
-            interaction.reply({ embeds: [embed] });
+            interaction.reply({ embeds: [embed], ephemeral: true });
             return;
         }
 
@@ -73,7 +73,7 @@ module.exports = {
         const todayMonth = today.getMonth() + 1;
         const todayDay = today.getDate();
         const todayYear = today.getFullYear();
-        const year = todayYear.toString();  
+        const year = todayYear.toString();
 
 
         // Loop through the data and check for birthdays to celebrate
@@ -83,38 +83,38 @@ module.exports = {
 
             // Check if the birthday has not been celebrated this year
             if (month === todayMonth && day === todayDay && !data[id].years.hasOwnProperty(year)) {
-                
-                  const tenorApikey = process.env.TENOR_API_KEY;
-                  const tags = 'anime+birthday';
-                  const randomPage = Math.floor(Math.random() * 100) + 1; // generate a random page number between 1-100
-                  const limit = 50;
-                  const url = `https://tenor.googleapis.com/v2/search?q=${tags}&key=${tenorApikey}&limit=${limit}&pos=${randomPage}`;
-                  
-                  let message = undefined;
-                  const channel = client.channels.cache.get(process.env.SWM_LOBBY_ID);
-                  try {
+
+                const tenorApikey = process.env.TENOR_API_KEY;
+                const tags = 'anime+birthday';
+                const randomPage = Math.floor(Math.random() * 100) + 1; // generate a random page number between 1-100
+                const limit = 50;
+                const url = `https://tenor.googleapis.com/v2/search?q=${tags}&key=${tenorApikey}&limit=${limit}&pos=${randomPage}`;
+
+                let message = undefined;
+                const channel = client.channels.cache.get(process.env.SWM_LOBBY_ID);
+                try {
                     const response = await axios.get(url);
                     const gifs = response.data.results;
                     const gif = gifs[getRandomIntInclusive(0, 49)].media_formats.gif.url;
-                  
-                    const embed = new EmbedBuilder()
-                      .setColor('#FFC0CB')
-                      .setTitle(`🎉 Happy birthday ${data[id].name}! 🎉`)
-                      .setDescription('Say Happy Birthday, everyone! 🎉')
-                      .setImage(gif);
-                      
-                    message = await channel.send({ embeds: [embed] });
-                  } catch (err) {
-                    console.error(err);
-                     // Send a birthday message in the channel
-                     const messageTxt = `🎉 Happy birthday ${data[id].name}! 🎉`;
-                     message = await channel.send(messageTxt);
-                  }
 
-                
+                    const embed = new EmbedBuilder()
+                        .setColor('#FFC0CB')
+                        .setTitle(`🎉 Happy birthday ${data[id].name}! 🎉`)
+                        .setDescription('Say Happy Birthday, everyone! 🎉')
+                        .setImage(gif);
+
+                    message = await channel.send({ embeds: [embed] });
+                } catch (err) {
+                    console.error(err);
+                    // Send a birthday message in the channel
+                    const messageTxt = `🎉 Happy birthday ${data[id].name}! 🎉`;
+                    message = await channel.send(messageTxt);
+                }
+
+
 
                 // Update the data to show that the birthday has been celebrated
-                if(data[id].years === undefined) data[id].years = {};
+                if (data[id].years === undefined) data[id].years = {};
                 data[id].years[year] = {};
                 data[id].years[year].celebrated = true;
                 data[id].years[year].messageId = message.id;
@@ -134,5 +134,5 @@ module.exports = {
         // Load the existing data from the JSON file
         return JSON.parse(fs.readFileSync(birthdaysFile));
     },
-    
-};
+
+}
