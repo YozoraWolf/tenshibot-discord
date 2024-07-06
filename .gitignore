@@ -6,3 +6,5 @@ birthdays.json
 tsconfig.json
 .env
 config.json
+.env.save
+tenshibot.sh
