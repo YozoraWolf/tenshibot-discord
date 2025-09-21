@@ -10,6 +10,7 @@ import ServerInit from './code/ServerInit';
 import Over18Check from './code/Over18Check';
 import TenshiActivity from './code/TenshiActivity';
 import FlairCheck from './code/FlairCheck';
+import TouhouScheduler from './code/TouhouScheduler';
 
 // Extended Client interface to include commands collection
 interface ExtendedClient extends Client {
@@ -112,6 +113,10 @@ client.on('ready', async () => {
   // Initialize checks
   FlairCheck.init(client);
   Over18Check.init(client);
+  
+  // Initialize Touhou daily scheduler
+  const touhouScheduler = new TouhouScheduler(client);
+  await touhouScheduler.init();
 });
 
 client.on('disconnect', () => {
