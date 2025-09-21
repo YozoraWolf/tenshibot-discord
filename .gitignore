@@ -6,3 +6,5 @@ birthdays.json
 .env
 config.json
 swm_members.json
+.env.save
+tenshibot.sh
