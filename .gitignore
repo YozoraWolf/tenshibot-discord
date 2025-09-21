@@ -1,8 +1,8 @@
 tenshi.js
 /node_modules
+/dist
 birthdays.json
 *.bat
-*.ts
-tsconfig.json
 .env
 config.json
+swm_members.json

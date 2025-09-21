@@ -1,8 +1,7 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const Poll = require('../classes/Poll.js');
+import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import Poll from '../classes/Poll';
 
-
-module.exports = {
+const command = {
   data: new SlashCommandBuilder()
     .setName('poll')
     .setDescription('Start a poll with up to 4 options')
@@ -36,20 +35,22 @@ module.exports = {
       option.setName('multi')
         .setDescription('Will the poll be multiple selection?')
     ),
-  async execute(interaction) {
+  
+  async execute(interaction: CommandInteraction): Promise<void> {
     // Retrieve options from the interaction
-    const question = interaction.options.getString('question');
-    const multi = interaction.options.getBoolean('multi') || false;
+    const question = interaction.options.get('question')?.value as string;
+    const multi = (interaction.options.get('multi')?.value as boolean) || false;
 
-    const options = [];
+    const options: string[] = [];
     for (let i = 1; i <= Poll.MAX_OPTIONS; i++) {
-      const option = interaction.options.getString(`option${i}`);
+      const option = interaction.options.get(`option${i}`)?.value as string | undefined;
       if (option) options.push(option);
     }
-    const timeLimit = interaction.options.getInteger('time') || 30;
+    const timeLimit = (interaction.options.get('time')?.value as number) || 30;
 
-    const p = new Poll(interaction, multi, question, options, timeLimit); 
+    const p = new Poll(interaction, multi, question, options, timeLimit);
     await p.start();
-    
-  },
+  }
 };
+
+export default command;
