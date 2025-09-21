@@ -8,3 +8,4 @@ config.json
 swm_members.json
 .env.save
 tenshibot.sh
+daily-posts.json

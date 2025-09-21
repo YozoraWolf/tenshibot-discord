@@ -35,7 +35,7 @@
     "build": "tsc",
     "start": "npm run build && node dist/main.js",
     "dev": "ts-node main.ts",
-    "deploy": "ts-node deploy-commands-new.ts",
+    "deploy": "npm run build && node dist/deploy-commands-new.js",
     "watch": "tsc --watch"
   },
   "author": "YozoraWolf",

@@ -3,9 +3,14 @@ import { Routes } from 'discord-api-types/v10';
 import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
 const dotenv = require('dotenv');
 import { Client, GatewayIntentBits } from 'discord.js';
+
+// ES module equivalents for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -23,9 +28,9 @@ const commands: any[] = [];
 
 // Grab all the command files from the commands directory
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-console.log(`Found ${commandFiles.length} command files in TypeScript`);
+console.log(`Found ${commandFiles.length} command files in JavaScript`);
 
 // Dynamically import and process each command file
 async function loadCommands() {
