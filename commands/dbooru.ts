@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
-import Utils from '../code/Utils';
+import Utils from '../code/Utils.js';
 import axios, { AxiosResponse } from 'axios';
 
 // Danbooru API types

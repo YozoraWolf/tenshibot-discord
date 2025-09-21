@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "Node16",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./",
@@ -26,7 +26,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],

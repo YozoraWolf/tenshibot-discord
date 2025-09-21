@@ -1,5 +1,7 @@
 import { SlashCommandBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
-import fetch from 'node-fetch-commonjs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const fetch = require('node-fetch-commonjs');
 
 const command = {
   data: new SlashCommandBuilder()

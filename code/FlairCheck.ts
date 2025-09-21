@@ -1,10 +1,16 @@
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 dotenv.config();
 
 import { Client, Guild, TextChannel, MessageReaction, PartialMessageReaction, User, PartialUser, GuildEmoji } from 'discord.js';
-import { FlairData } from '../types/index';
+import { FlairData } from '../types/index.js';
+import fs from 'fs';
+import path from 'path';
 
-const Flairs: FlairData[] = require('../data/flairs.json');
+// Load flairs.json with proper path resolution
+const flairsPath = path.resolve(process.cwd(), 'data', 'flairs.json');
+const Flairs: FlairData[] = JSON.parse(fs.readFileSync(flairsPath, 'utf-8'));
 
 class FlairCheck {
   private static client: Client | undefined = undefined;

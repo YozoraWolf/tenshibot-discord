@@ -1,10 +1,16 @@
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 dotenv.config();
 
 import { Client, Guild, GuildMember, Role, TextChannel, MessageReaction, PartialMessageReaction, User, PartialUser, PermissionFlagsBits } from 'discord.js';
-import { StringsData } from '../types/index';
+import { StringsData } from '../types/index.js';
+import fs from 'fs';
+import path from 'path';
 
-const Strings: StringsData = require('../data/strings.json');
+// Load strings.json with proper path resolution
+const stringsPath = path.resolve(process.cwd(), 'data', 'strings.json');
+const Strings: StringsData = JSON.parse(fs.readFileSync(stringsPath, 'utf-8'));
 
 class ServerInit {
   private static client: Client | undefined = undefined;

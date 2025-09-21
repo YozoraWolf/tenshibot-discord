@@ -45,3 +45,20 @@ export interface PhraseData {
     english: string[];
   };
 }
+
+export interface DailyPostConfig {
+  id: string;
+  title: string;
+  channel: string;
+  tags: string;
+  rating: 'safe' | 'questionable' | 'explicit';
+  time: string; // HH:MM format
+  timezone: string;
+  enabled: boolean;
+  emoji: string;
+  color: string; // Hex color code
+}
+
+export interface DailyPostsConfig {
+  dailyPosts: DailyPostConfig[];
+}

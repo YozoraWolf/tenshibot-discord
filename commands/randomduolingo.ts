@@ -1,8 +1,10 @@
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 dotenv.config();
 
 import { SlashCommandBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
-import fetch from 'node-fetch-commonjs';
+const fetch = require('node-fetch-commonjs');
 
 // Tumblr API response types
 interface TumblrPhoto {

@@ -1,11 +1,17 @@
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 dotenv.config();
 
-import Utils from './Utils';
+import Utils from './Utils.js';
 import { Client, Guild } from 'discord.js';
-import { StatusData } from '../types/index';
+import { StatusData } from '../types/index.js';
+import fs from 'fs';
+import path from 'path';
 
-const TENSHI_STATUS: StatusData[] = require('../tenshi_status.json');
+// Load tenshi_status.json with proper path resolution
+const statusPath = path.resolve(process.cwd(), 'tenshi_status.json');
+const TENSHI_STATUS: StatusData[] = JSON.parse(fs.readFileSync(statusPath, 'utf-8'));
 
 class TenshiActivity {
   private static client: Client | undefined = undefined;

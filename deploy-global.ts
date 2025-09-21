@@ -2,7 +2,9 @@ import { REST } from 'discord.js';
 import { Routes } from 'discord-api-types/v10';
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 import { Client, GatewayIntentBits } from 'discord.js';
 
 // Load environment variables

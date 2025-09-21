@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
-import Poll from '../classes/Poll';
+import Poll from '../classes/Poll.js';
 
 const command = {
   data: new SlashCommandBuilder()

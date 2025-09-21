@@ -1,13 +1,18 @@
 import { SlashCommandBuilder, CommandInteraction, PermissionFlagsBits } from 'discord.js';
-import TouhouScheduler from '../code/TouhouScheduler';
+import DailyPostScheduler from '../code/DailyPostScheduler.js';
 
 const command = {
   data: new SlashCommandBuilder()
     .setName('touhoutest')
-    .setDescription('Manually trigger a daily Touhou waifu post (Admin/Owner only)')
+    .setDescription('Manually trigger a daily post (Admin/Owner only)')
+    .addStringOption(option =>
+      option.setName('postid')
+        .setDescription('Post ID from configuration (e.g., touhou_sfw, touhou_nsfw, miku_daily)')
+        .setRequired(false)
+    )
     .addStringOption(option =>
       option.setName('channel')
-        .setDescription('Override channel to post in (default: both sfw and nsfw)')
+        .setDescription('Override channel to post in (legacy mode only)')
         .setRequired(false)
         .addChoices(
           { name: 'SFW only', value: 'sfw' },
@@ -18,11 +23,11 @@ const command = {
     )
     .addStringOption(option =>
       option.setName('rating')
-        .setDescription('Override content rating (for single channel tests)')
+        .setDescription('Override rating (legacy mode only)')
         .setRequired(false)
         .addChoices(
-          { name: 'Safe', value: 'safe' },
-          { name: 'NSFW/Explicit', value: 'explicit' }
+          { name: 'Safe/SFW', value: 'safe' },
+          { name: 'Explicit/NSFW', value: 'explicit' }
         )
     ),
   
@@ -62,32 +67,53 @@ const command = {
     try {
       await interaction.deferReply();
       
-      const channelOverride = interaction.options.get('channel')?.value as string || 'both';
-      const ratingOverride = interaction.options.get('rating')?.value as 'safe' | 'explicit' || 'safe';
+      const postId = interaction.options.get('postid')?.value as string;
+      const channelOverride = interaction.options.get('channel')?.value as string;
+      const ratingOverride = interaction.options.get('rating')?.value as 'safe' | 'explicit';
       
-      const scheduler = new TouhouScheduler(interaction.client);
+      const scheduler = new DailyPostScheduler(interaction.client);
       
-      if (channelOverride === 'both') {
-        // Post to both channels (default behavior)
-        await scheduler.postDailyTouhouWaifus();
-        await interaction.editReply('✅ Daily Touhou waifu posts triggered successfully for both SFW and NSFW channels!');
-      } else {
-        // Post to specific channel
-        let rating: 'safe' | 'explicit' = ratingOverride;
+      if (postId) {
+        // New mode: trigger specific configured post
+        const configs = scheduler.getPostConfigs();
+        const config = configs.find(c => c.id === postId);
         
-        // Auto-determine rating if not specified
-        if (!interaction.options.get('rating')) {
-          if (channelOverride === 'sfw') rating = 'safe';
-          else if (channelOverride === 'nsfw') rating = 'explicit';
-          else rating = 'safe'; // Default for bottests
+        if (!config) {
+          const availableIds = configs.map(c => c.id).join(', ');
+          await interaction.editReply(`❌ Post ID "${postId}" not found! Available IDs: ${availableIds}`);
+          return;
         }
         
-        await scheduler.postDailyTouhouWaifu(channelOverride, rating);
-        await interaction.editReply(`✅ Daily Touhou waifu post triggered successfully for #${channelOverride} with ${rating} content!`);
+        const success = await scheduler.triggerPost(postId);
+        if (success) {
+          await interaction.editReply(`✅ Successfully triggered "${config.title}" (${postId})!`);
+        } else {
+          await interaction.editReply(`❌ Failed to trigger "${config.title}" (${postId}).`);
+        }
+      } else {
+        // Legacy mode: Touhou-specific behavior with overrides
+        if (channelOverride === 'both' || !channelOverride) {
+          // Post all Touhou posts (SFW and NSFW)
+          await scheduler.postDailyTouhouWaifus();
+          await interaction.editReply('✅ Daily Touhou waifu posts triggered successfully for both SFW and NSFW channels!');
+        } else {
+          // Post to specific channel with legacy method
+          let rating: 'safe' | 'explicit' = ratingOverride || 'safe';
+          
+          // Auto-determine rating if not specified
+          if (!ratingOverride) {
+            if (channelOverride === 'sfw') rating = 'safe';
+            else if (channelOverride === 'nsfw') rating = 'explicit';
+            else rating = 'safe'; // Default for bottests
+          }
+          
+          await scheduler.postDailyTouhouWaifu(channelOverride, rating);
+          await interaction.editReply(`✅ Daily Touhou waifu post triggered successfully for #${channelOverride} with ${rating} content!`);
+        }
       }
     } catch (error) {
-      console.error('Error triggering Touhou post:', error);
-      await interaction.editReply('❌ Error triggering the daily Touhou post. Check console for details.');
+      console.error('Error triggering daily post:', error);
+      await interaction.editReply('❌ Error triggering the daily post. Check console for details.');
     }
   },
 };

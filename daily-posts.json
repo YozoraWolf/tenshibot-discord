@@ -1,0 +1,52 @@
+{
+  "dailyPosts": [
+    {
+      "id": "touhou_sfw",
+      "title": "Daily Touhou Post",
+      "channel": "sfw",
+      "tags": "touhou rating:safe score:>10",
+      "rating": "safe",
+      "time": "21:00",
+      "timezone": "Asia/Tokyo",
+      "enabled": true,
+      "emoji": "🌸",
+      "color": "#FF69B4"
+    },
+    {
+      "id": "touhou_nsfw",
+      "title": "Daily Touhou Post",
+      "channel": "nsfw",
+      "tags": "touhou rating:explicit score:>5",
+      "rating": "explicit",
+      "time": "21:00",
+      "timezone": "Asia/Tokyo",
+      "enabled": true,
+      "emoji": "🔞",
+      "color": "#FF1493"
+    },
+    {
+      "id": "example_miku",
+      "title": "Daily Miku Post",
+      "channel": "sfw",
+      "tags": "hatsune_miku rating:safe score:>15",
+      "rating": "safe",
+      "time": "12:00",
+      "timezone": "Asia/Tokyo",
+      "enabled": false,
+      "emoji": "🎵",
+      "color": "#39C5BB"
+    },
+    {
+      "id": "example_azur_lane",
+      "title": "Daily Azur Lane Post",
+      "channel": "sfw",
+      "tags": "azur_lane rating:safe score:>10",
+      "rating": "safe",
+      "time": "18:00",
+      "timezone": "Asia/Tokyo",
+      "enabled": false,
+      "emoji": "⚓",
+      "color": "#4A90E2"
+    }
+  ]
+}

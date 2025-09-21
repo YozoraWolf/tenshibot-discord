@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@discordjs/rest": "^1.7.0",
     "@types/node-cron": "^3.0.11",
@@ -23,6 +23,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.3",
     "@types/node": "^24.5.2",
     "@types/request": "^2.48.7",
     "@types/xml2js": "^0.4.9",

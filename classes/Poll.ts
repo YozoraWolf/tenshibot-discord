@@ -1,5 +1,5 @@
 import { EmbedBuilder, CommandInteraction, Message, MessageReaction, ReactionCollector } from 'discord.js';
-import Utils from '../code/Utils';
+import Utils from '../code/Utils.js';
 
 class Poll {
   private interaction: CommandInteraction;

@@ -1,16 +1,19 @@
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 dotenv.config();
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { Client, Events, GatewayIntentBits, Collection, CommandInteraction, SlashCommandBuilder } from 'discord.js';
 
-import ServerInit from './code/ServerInit';
-import Over18Check from './code/Over18Check';
-import TenshiActivity from './code/TenshiActivity';
-import FlairCheck from './code/FlairCheck';
-import TouhouScheduler from './code/TouhouScheduler';
+import ServerInit from './code/ServerInit.js';
+import Over18Check from './code/Over18Check.js';
+import TenshiActivity from './code/TenshiActivity.js';
+import FlairCheck from './code/FlairCheck.js';
+import DailyPostScheduler from './code/DailyPostScheduler.js';
 
 // Extended Client interface to include commands collection
 interface ExtendedClient extends Client {
@@ -34,59 +37,51 @@ const client = new Client({
 
 client.commands = new Collection<string, Command>();
 
-// Setup bot cmd directory
-const commandsPath: string = path.join(__dirname, 'commands');
-const allFiles: string[] = fs.readdirSync(commandsPath);
+async function loadCommands() {
+  // Setup bot cmd directory (ES module equivalent of __dirname)
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const commandsPath: string = path.join(__dirname, 'commands');
+  const allFiles: string[] = fs.readdirSync(commandsPath);
 
-// Prioritize .ts files over .js files (avoid loading both)
-const commandFiles: string[] = [];
-const processedCommands = new Set<string>();
+  // Load .js files (compiled from TypeScript)
+  const commandFiles: string[] = allFiles.filter(file => file.endsWith('.js'));
+  
+  console.log(`📂 Found ${commandFiles.length} command files to load`);
 
-// First, add all .ts files
-allFiles.filter(file => file.endsWith('.ts')).forEach(file => {
-  const commandName = path.basename(file, '.ts');
-  commandFiles.push(file);
-  processedCommands.add(commandName);
-});
-
-// Then add .js files only if there's no corresponding .ts file
-allFiles.filter(file => file.endsWith('.js')).forEach(file => {
-  const commandName = path.basename(file, '.js');
-  if (!processedCommands.has(commandName)) {
-    commandFiles.push(file);
-  }
-});
-
-// Load cmds dynamically by filename
-for (const file of commandFiles) {
-  const filePath: string = path.join(commandsPath, file);
-  const commandModule = require(filePath);
-  const command: Command = commandModule.default || commandModule;
-  // Set a new item in the Collection with the key as the command name and the value as the exported module
-  if ('data' in command && 'execute' in command) {
-    client.commands.set(command.data.name, command);
-  } else {
-    console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+  // Load cmds dynamically by filename
+  for (const file of commandFiles) {
+    const filePath: string = path.join(commandsPath, file);
+    try {
+      const commandModule = await import(pathToFileURL(filePath).href);
+      const command: Command = commandModule.default || commandModule;
+      // Set a new item in the Collection with the key as the command name and the value as the exported module
+      if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+        console.log(`✅ Loaded command: ${command.data.name}`);
+      } else {
+        console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+      }
+    } catch (error) {
+      console.error(`❌ Error loading command from ${filePath}:`, error);
+    }
   }
 }
 
 async function bdayCheckInterval(client: Client): Promise<void> {
   try {
-    // Try to load TypeScript version first, then JavaScript
+    // Load the birthday command using ES module dynamic imports
     let bdayCommand;
-    const tsPath = './commands/bday.ts';
-    const jsPath = './commands/bday.js';
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const jsPath = path.join(__dirname, 'commands', 'bday.js');
     
     try {
-      bdayCommand = require(tsPath);
-      bdayCommand = bdayCommand.default || bdayCommand;
-    } catch {
-      try {
-        bdayCommand = require(jsPath);
-      } catch (error) {
-        console.error('Could not load birthday command:', error);
-        return;
-      }
+      const commandModule = await import(pathToFileURL(jsPath).href);
+      bdayCommand = commandModule.default || commandModule;
+    } catch (error) {
+      console.error('Could not load birthday command:', error);
+      return;
     }
     
     if (bdayCommand.checkBirthdays) {
@@ -103,6 +98,9 @@ async function bdayCheckInterval(client: Client): Promise<void> {
 client.on('ready', async () => {
   console.log(`🔌 Connected as ${client.user?.username}`);
   
+  // Load commands
+  await loadCommands();
+  
   // Initialize components
   ServerInit.init(client);
   TenshiActivity.init(client);
@@ -114,9 +112,9 @@ client.on('ready', async () => {
   FlairCheck.init(client);
   Over18Check.init(client);
   
-  // Initialize Touhou daily scheduler
-  const touhouScheduler = new TouhouScheduler(client);
-  await touhouScheduler.init();
+  // Initialize Daily Post Scheduler
+  const dailyPostScheduler = new DailyPostScheduler(client);
+  await dailyPostScheduler.init();
 });
 
 client.on('disconnect', () => {

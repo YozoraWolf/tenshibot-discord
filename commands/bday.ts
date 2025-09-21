@@ -1,9 +1,11 @@
 import fs from 'fs';
 import { EmbedBuilder, SlashCommandBuilder, CommandInteraction, Client, TextChannel } from 'discord.js';
-import Utils from '../code/Utils';
+import Utils from '../code/Utils.js';
 import axios, { AxiosResponse } from 'axios';
-import dotenv from 'dotenv';
-import { BirthdayData } from '../types/index';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
+import { BirthdayData } from '../types/index.js';
 dotenv.config();
 
 // Tenor API response types
